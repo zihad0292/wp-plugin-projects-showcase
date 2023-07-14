@@ -5,19 +5,19 @@
 	 */
 	function wppool_zi_projects_register_post_types() {
 		$labels = array(
-            'name'               => 'WPPool Projects',
-            'singular_name'      => 'WPPool Project',
-            'menu_name'          => 'WPPool Projects', 
+            'name'               => 'Projects',
+            'singular_name'      => 'Project',
+            'menu_name'          => 'Projects', 
             'add_new'            => 'Add New',
-            'add_new_item'       => 'Add New WPPool Project',
-            'new_item'           => 'New WPPool Project',
-            'edit_item'          => 'Edit WPPool Project',
-            'view_item'          => 'View WPPool Project',
-            'all_items'          => 'All WPPool Projects',
-            'search_items'       => 'Search WPPool Projects',
-            'parent_item_colon'  => 'Parent WPPool Projects:',
-            'not_found'          => 'No WPPool Projects found.',
-            'not_found_in_trash' => 'No WPPool Projects found in Trash.'
+            'add_new_item'       => 'Add New Project',
+            'new_item'           => 'New Project',
+            'edit_item'          => 'Edit Project',
+            'view_item'          => 'View Project',
+            'all_items'          => 'All Projects',
+            'search_items'       => 'Search Projects',
+            'parent_item_colon'  => 'Parent Projects:',
+            'not_found'          => 'No Projects found.',
+            'not_found_in_trash' => 'No Projects found in Trash.'
         );
     
         $args = array(
@@ -33,7 +33,7 @@
             'hierarchical'        => false,
             'menu_position'       => 5,
             'menu_icon'           => 'dashicons-buddicons-topics',
-            'supports'            => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments' ),
+            'supports'            => array( 'title', 'editor', 'thumbnail' ),
         );
         
         $post_type = 'wppool_zi_projects';

@@ -11,35 +11,113 @@
  * Text Domain: wppool-zi-projects
  * Domain Path: /languages
  */
+  
+ require_once('includes/functions.php');
+
+ class WppoolZiProjects {
+	public function __construct() {  
+		add_action( 'init', array( $this, 'wppool_zi_projects_init' ) );
+		add_action( 'admin_menu', array( $this, 'wppool_zi_projects_add_metabox' ) );
+		add_action( 'save_post', array( $this, 'wppool_zi_projects_save_metabox' ) );
+		add_action( 'save_post', array( $this, 'wppool_zi_projects_save_image' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'wppool_zi_projects_admin_assets' ) );
+	}
+
+	function wppool_zi_projects_admin_assets() {
+		wp_enqueue_style( 'wppool_zi_projects-admin-style', plugin_dir_url( __FILE__ ) . "assets/admin/css/style.css", null, time() );
+		wp_enqueue_style( 'jquery-ui-css', '//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css', null, time() );
+		wp_enqueue_script( 'wppool_zi_projects-admin-js', plugin_dir_url( __FILE__ ) . "assets/admin/js/main.js", array(
+			'jquery',
+		), time(), true );
+	}
+
+
+	private function is_secured( $nonce_field, $action, $post_id ) {
+		$nonce = isset( $_POST[ $nonce_field ] ) ? $_POST[ $nonce_field ] : '';
+
+		if ( $nonce == '' ) {
+			return false;
+		}
+		if ( ! wp_verify_nonce( $nonce, $action ) ) {
+			return false;
+		}
+
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return false;
+		}
+
+		if ( wp_is_post_autosave( $post_id ) ) {
+			return false;
+		}
+
+		if ( wp_is_post_revision( $post_id ) ) {
+			return false;
+		}
+
+		return true;
+
+	}
 
  
-define( 'WPPOOL_ZI_PROJECTS_VERSION', '1.0.0' ); 
+	function wppool_zi_projects_init() {
+		
+		wppool_zi_projects_register_post_types();
+		
+		do_action( 'wppool_zi_projects_init' );
+	}
 
-define( 'WPPOOL_ZI_PROJECTS_TEXT_DOMAIN', 'wppool-zi-projects' );
+	function wppool_zi_projects_save_image($post_id){ 
 
-define( 'WPPOOL_ZI_PROJECTS_PLUGIN', __FILE__ );
+		$image_id    = isset( $_POST['wppool_zi_projects_image_id'] ) ? $_POST['wppool_zi_projects_image_id'] : '';
+		$image_url    = isset( $_POST['wppool_zi_projects_image_url'] ) ? $_POST['wppool_zi_projects_image_url'] : '';
 
-define( 'WPPOOL_ZI_PROJECTS_PLUGIN_BASENAME', plugin_basename( WPPOOL_ZI_PROJECTS_PLUGIN ) );
+		update_post_meta($post_id,'wppool_zi_projects_image_id',$image_id);
+		update_post_meta($post_id,'wppool_zi_projects_image_url',$image_url);
 
-define( 'WPPOOL_ZI_PROJECTS_PLUGIN_NAME', trim( dirname( WPPOOL_ZI_PROJECTS_PLUGIN_BASENAME ), '/' ) );
+	}
 
-define( 'WPPOOL_ZI_PROJECTS_PLUGIN_DIR', untrailingslashit( dirname( WPPOOL_ZI_PROJECTS_PLUGIN ) ) );
- 
-require_once WPPOOL_ZI_PROJECTS_PLUGIN_DIR . '/includes/functions.php';
+	function wppool_zi_projects_save_metabox( $post_id ) {
 
-
-/**
- * Registers post types
- */
-
-function wppool_zi_projects_init() {
+	}
 	
-	wppool_zi_projects_register_post_types();
+	function wppool_zi_projects_add_metabox() {
+
+		add_meta_box(
+			'wppool_zi_projects_image_info',
+			__( 'Image Info', 'our-metabox' ),
+			array( $this, 'wppool_zi_projects_image_info' ),
+			'wppool_zi_projects',
+		);
+
+	}
+
+	function wppool_zi_projects_image_info($post) {
+		$image_id = esc_attr(get_post_meta($post->ID,'wppool_zi_projects_image_id',true));
+		$image_url = esc_attr(get_post_meta($post->ID,'wppool_zi_projects_image_url',true));
+		wp_nonce_field( 'wppool_zi_projects_image', 'wppool_zi_projects_image_nonce' );
+
+		$metabox_html = <<<EOD
+<div class="fields">
+	<div class="field_c">
+		<div class="label_c">
+			<label>Image</label>
+		</div>
+		<div class="input_c">
+			<button class="button" id="upload_image">Upload Image</button>
+			<input type="hidden" name="wppool_zi_projects_image_id" id="wppool_zi_projects_image_id" value="{$image_id}"/>
+			<input type="hidden" name="wppool_zi_projects_image_url" id="wppool_zi_projects_image_url" value="{$image_url}"/>
+			<div style="width:100%;height:auto;" id="image-container"></div>
+		</div>
+		<div class="float_c"></div>
+	</div>
 	
-	do_action( 'wppool_zi_projects_init' );
+</div>
+EOD;
+
+		echo $metabox_html;
+
+	}
 }
 
-add_action( 'init', 'wppool_zi_projects_init', 10, 0 );
-
-
+new WppoolZiProjects();
 
