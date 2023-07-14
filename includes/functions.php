@@ -35,6 +35,18 @@
             'menu_icon'           => 'dashicons-admin-post',
             'supports'            => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments' ),
         );
-    
-        register_post_type( 'wppool-zi-projects', $args );
+        
+        $post_type = 'wppool_zi_projects';
+
+        if ( ! post_type_exists( $post_type ) ) { 
+            register_post_type( $post_type, $args );
+        }
+     
 	}
+
+    /**
+	 * function for unregistering the WPPool Projects post type.
+	 */
+	function wppool_zi_projects_unregister_post_types() {
+        unregister_post_type('wppool_zi_projects');
+    }

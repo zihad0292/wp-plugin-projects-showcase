@@ -31,11 +31,15 @@ require_once WPPOOL_ZI_PROJECTS_PLUGIN_DIR . '/includes/functions.php';
 /**
  * Registers post types
  */
-add_action( 'init', 'wppool_zi_projects_init', 10, 0 );
 
 function wppool_zi_projects_init() {
 	
 	wppool_zi_projects_register_post_types();
-
+	
 	do_action( 'wppool_zi_projects_init' );
 }
+
+add_action( 'init', 'wppool_zi_projects_init', 10, 0 );
+
+
+
