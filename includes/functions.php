@@ -32,7 +32,7 @@
             'has_archive'         => true,
             'hierarchical'        => false,
             'menu_position'       => 5,
-            'menu_icon'           => 'dashicons-admin-post',
+            'menu_icon'           => 'dashicons-buddicons-topics',
             'supports'            => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments' ),
         );
         
