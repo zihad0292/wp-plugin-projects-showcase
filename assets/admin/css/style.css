@@ -32,11 +32,16 @@
   border: none;
 }
 
+#image-container,
 #images-container {
   width: 100%;
   height: auto;
   padding: 10px;
   padding-left: 0;
   margin-left: -10px;
+}
+
+#image-container {
+  margin-left: 0;
 }
 

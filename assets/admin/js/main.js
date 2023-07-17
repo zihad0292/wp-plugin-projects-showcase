@@ -1,15 +1,51 @@
-var gframe;
+var frame, gframe;
 (function ($) {
   $(document).ready(function () {
+    var image_url = $("#wppool_zi_projects_thumbnail_image_url").val();
+    if (image_url) {
+      $("#image-container").html(`<img src='${image_url}' />`);
+    }
+
     // show already uploaded preview images
     var images_url = $("#wppool_zi_projects_images_url").val();
     images_url = images_url ? images_url.split(";") : [];
     for (i in images_url) {
-      var _image_url = images_url[i];
+      var _thumbnail_image_url = images_url[i];
       $("#images-container").append(
-        `<img style="margin-left: 10px" src='${_image_url}' />`
+        `<img style="margin-left: 10px" src='${_thumbnail_image_url}' />`
       );
     }
+
+    // handle thumbnail image upload
+    $("#upload_image").on("click", function () {
+      if (frame) {
+        frame.open();
+        return false;
+      }
+
+      frame = wp.media({
+        title: "Select Image",
+        button: {
+          text: "Insert Image",
+        },
+        multiple: false,
+      });
+
+      frame.on("select", function () {
+        var attachment = frame.state().get("selection").first().toJSON();
+        console.log(attachment);
+        $("#wppool_zi_projects_thumbnail_image_id").val(attachment.id);
+        $("#wppool_zi_projects_thumbnail_image_url").val(
+          attachment.sizes.thumbnail.url
+        );
+        $("#image-container").html(
+          `<img src='${attachment.sizes.thumbnail.url}' />`
+        );
+      });
+
+      frame.open();
+      return false;
+    });
 
     // handle upload preivew images
     $("#upload_images").on("click", function () {
