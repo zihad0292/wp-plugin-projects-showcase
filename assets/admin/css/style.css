@@ -32,3 +32,11 @@
   border: none;
 }
 
+#images-container {
+  width: 100%;
+  height: auto;
+  padding: 10px;
+  padding-left: 0;
+  margin-left: -10px;
+}
+
