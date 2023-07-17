@@ -26,9 +26,26 @@
 
 	// Enqueue css and js files
 	function wppool_zi_projects_admin_assets() {
+		// admin css
 		wp_enqueue_style( 'wppool_zi_projects-admin-style', plugin_dir_url( __FILE__ ) . "assets/admin/css/style.css", null, time() );
+		// jquery ui css
 		wp_enqueue_style( 'jquery-ui-css', '//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css', null, time() );
-		wp_enqueue_script( 'wppool_zi_projects-admin-js', plugin_dir_url( __FILE__ ) . "assets/admin/js/main.js", array(
+		// bootstrap css
+		wp_enqueue_style( 'bootstrap-css', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css', null, time() );
+		// bootstrap js
+		wp_enqueue_script( 'wppool_zi_projects-bootstrap-js', "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js", array(
+			'jquery',
+		), time(), true );
+		// istope js for sorting and filtering
+		wp_enqueue_script( 'wppool_zi_projects-isotope-js', "https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js", array(
+			'jquery',
+		), time(), true );
+		// Custom js file for admin
+		wp_enqueue_script( 'wppool_zi_projects-admin-js', plugin_dir_url( __FILE__ ) . "assets/admin/js/admin.js", array(
+			'jquery',
+		), time(), true );
+		// Custom js file for frontend
+		wp_enqueue_script( 'wppool_zi_projects-frontend-js', plugin_dir_url( __FILE__ ) . "assets/admin/js/frontend.js", array(
 			'jquery',
 		), time(), true );
 	}
