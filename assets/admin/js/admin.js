@@ -7,7 +7,7 @@ var frame, gframe;
     for (i in images_url) {
       var _thumbnail_image_url = images_url[i];
       $("#images-container").append(
-        `<img style="margin-left: 10px" src='${_thumbnail_image_url}' />`
+        `<img style="margin-left: 10px; margin-top: 10px;" src='${_thumbnail_image_url}' />`
       );
     }
 
@@ -38,7 +38,7 @@ var frame, gframe;
           image_ids.push(attachment.id);
           image_urls.push(attachment.sizes.thumbnail.url);
           $("#images-container").append(
-            `<img style="margin-right: 10px;" src='${attachment.sizes.thumbnail.url}' />`
+            `<img style="margin-right: 10px; margin-top: 10px;" src='${attachment.sizes.thumbnail.url}' />`
           );
         }
         $("#wppool_zi_projects_images_id").val(image_ids.join(";"));
