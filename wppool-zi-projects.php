@@ -17,6 +17,7 @@
  class WppoolZiProjects {
 	public function __construct() {  
 		add_action( 'init', array( $this, 'wppool_zi_projects_init' ) );
+		add_action( 'init', array( $this, 'wppool_zi_projects_register_image_size' ) ); 
 		add_action( 'admin_menu', array( $this, 'wppool_zi_projects_add_metabox' ) );
 		add_action( 'save_post', array( $this, 'wppool_zi_projects_save_metabox' ) );
 		add_action( 'save_post', array( $this, 'wppool_zi_projects_save_preview_images' ) );
@@ -94,6 +95,10 @@
 		do_action( 'wppool_zi_projects_init' );
 	}
 
+	function wppool_zi_projects_register_image_size() { 
+		add_image_size( 'wppool-zi-projects-thumb-square', 300, 300, true );
+	}
+
 	// Save metabox function
 	function wppool_zi_projects_save_metabox( $post_id ) {
 
@@ -129,7 +134,7 @@
 	// Wrapper function for add_meta_box WP functions
 	function wppool_zi_projects_add_metabox() {
 		add_meta_box(
-			'wppool_zi_projects_post_external_url',
+			'wppool_zi_projects_external_url',
 			__( 'External URL', 'wppool-zi-projects' ),
 			array( $this, 'wppool_zi_projects_display_metabox' ),
 			'wppool_zi_projects',
