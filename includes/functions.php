@@ -33,7 +33,7 @@
             'taxonomies'          => array( 'category' ),
             'menu_position'       => 5,
             'menu_icon'           => 'dashicons-buddicons-topics',
-            'supports'            => array( 'title', 'editor' ),
+            'supports'            => array( 'title', 'editor', 'thumbnail'),
         );
         
         $post_type = 'wppool_zi_projects';
