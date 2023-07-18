@@ -22,6 +22,9 @@
 		add_action( 'save_post', array( $this, 'wppool_zi_projects_save_thumbnail_image' ) );
 		add_action( 'save_post', array( $this, 'wppool_zi_projects_save_preview_images' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'wppool_zi_projects_admin_assets' ) );
+
+		// Load archive template
+		add_filter('template_include', array( $this, 'wppool_zi_projects_archive_template' ));
 	}
 
 	// Enqueue css and js files
@@ -235,6 +238,21 @@ EOD;
 		echo $metabox_html;
 	}
 
+	// archive template
+	function wppool_zi_projects_archive_template($template) {
+		if (is_post_type_archive('wppool_zi_projects')) {
+			$child_template = locate_template('templates/archive-wppool_zi_projects.php');
+	
+			if ($child_template) {
+				return $child_template;
+			}
+	
+			// Fallback to the plugin's template
+			return plugin_dir_path(__FILE__) . 'templates/archive-wppool_zi_projects.php';
+		}
+	
+		return $template;
+	}
 
 }
 
