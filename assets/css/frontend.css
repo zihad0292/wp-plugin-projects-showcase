@@ -65,7 +65,19 @@
 /* project card */
 .wppool-grid-container .wppool-loop-project .card {
   cursor: pointer;
-  max-width: 300px;
-  margin: 0 auto;
+}
+
+.wppool-grid-container
+  .wppool-loop-project
+  .card
+  .wppool-loop-project-category {
+  min-height: 1.5rem;
+  color: #666666;
+}
+@media screen and (max-width: 767px) {
+  .wppool-grid-container .wppool-loop-project .card {
+    max-width: 300px;
+    margin: 0 auto;
+  }
 }
 

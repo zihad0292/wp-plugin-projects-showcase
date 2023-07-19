@@ -119,7 +119,7 @@ $fallback_image_path = $plugin_dir_url . 'assets/images/fallback-image.jpg';
                                 $external_url = get_post_meta( $post_id, 'wppool_zi_projects_external_url', true );
                     
                                 ?>
-                                <div class="col-12 col-sm-6 col-md-6 col-lg-4 mb-sm-3 mb-md-5 wppool-loop-project element-item <?php echo $category_classes;?>" data-category="<?php echo ! empty( $category_names ) ? $category_names : "0";?>" data-title="<?php the_title();?>" id="post-<?php the_ID(); ?>" <?php post_class(); ?> data-postID="<?php the_ID();?>">
+                                <div class="col-12 col-sm-6 col-md-6 col-lg-4 mb-sm-3 mb-md-4 wppool-loop-project element-item <?php echo $category_classes;?>" data-category="<?php echo ! empty( $category_names ) ? $category_names : "0";?>" data-title="<?php the_title();?>" id="post-<?php the_ID(); ?>" <?php post_class(); ?> data-postID="<?php the_ID();?>">
                                     <div class="card">
                                         <?php
                                         // Display the featured image (thumbnail) if it exists.
@@ -130,8 +130,18 @@ $fallback_image_path = $plugin_dir_url . 'assets/images/fallback-image.jpg';
                                         }
                                         ?> 
                                         <div class="card-body">
-                                            <h5 class="card-title"><?php the_title(); ?></h5>  
-                                            <p>Category: <?php echo ! empty( $category_names ) ? $category_names : "No category assigned"; ?></p>  
+                                            <h5 class="card-title fs-5 fw-normal text-center"><?php the_title(); ?></h5>  
+                                            <p class="fs-6 fw-medium text-center wppool-loop-project-category">
+                                            <?php 
+                                            // Check if categories are available and loop through them
+                                            if ( ! is_wp_error( $post_categories ) && ! empty( $post_categories ) ) {
+                                                foreach ( $post_categories as $category ) {
+                                                    // Output the category name
+                                                    echo '<span class="badge text-bg-secondary mx-1 p-2">' . $category->name . '</span>';
+                                                }
+                                            }   
+                                            ?>  
+                                            </p>  
                                         </div>
                                     </div>
                                 </div>
