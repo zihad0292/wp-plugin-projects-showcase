@@ -1,90 +1,71 @@
-/* add css here */
-.fields {
-  padding-top: 8px;
+.wppool-archive-wrapper {
+  background-color: #f1f1f1;
 }
 
-.field_c {
-  margin-bottom: 5px;
+/* page header */
+.archive-header.jumbotron {
+  background-image: url("../images/archive-header.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  padding-top: 7rem;
+  padding-bottom: 10rem;
+  position: relative;
 }
 
-.label_c {
-  width: 15%;
-  float: left;
+.archive-header.jumbotron .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.3);
 }
 
-.label_c label {
-  line-height: 35px;
+.archive-header.jumbotron .container {
+  position: relative;
 }
 
-.input_c {
-  width: 85%;
-  float: left;
-}
-
-.input_c button {
-  height: 30px;
-}
-
-#wppool_zi_projects_external_url {
+.archive-header.jumbotron .container p.lead {
   width: 100%;
-  margin-top: 10px;
-}
-
-.float_c {
-  clear: both;
-}
-
-.button {
-  border: none;
-}
-
-#image-container,
-#images-container {
-  width: 100%;
-  height: auto;
-  padding: 10px;
-  padding-left: 0;
-  margin-left: -10px;
-}
-
-#image-container {
-  margin-left: 0;
+  max-width: 50rem;
 }
 
 /* isotope filtering */
-.button {
-  display: inline-block;
-  padding: 0.5em 1em;
-  margin-bottom: 10px;
-  background: #eee;
-  border: none;
-  border-radius: 7px;
-  background-image: linear-gradient(
-    to bottom,
-    hsla(0, 0%, 0%, 0),
-    hsla(0, 0%, 0%, 0.2)
-  );
-  color: #222;
-  font-family: sans-serif;
-  font-size: 16px;
-  cursor: pointer;
+#filter-buttons,
+#sort-buttons {
+  margin-left: -10px;
 }
 
-.button:hover {
-  background-color: #8cf;
-  color: #222;
+#filter-buttons .btn,
+#sort-buttons .btn {
+  margin: 0 0 10px 10px;
+  font-size: 0.8rem !important;
+  border: none !important;
 }
 
-.button:active,
-.button.is-checked {
+#filter-buttons .btn:hover,
+#sort-buttons .btn:hover {
+  background-color: #28f !important;
+  color: #fff !important;
+}
+
+#filter-buttons .btn:active,
+#filter-buttons .btn.is-checked,
+#sort-buttons .btn:active,
+#sort-buttons .btn.is-checked {
   background-color: #28f !important;
 }
 
-.button.is-checked {
+#filter-buttons .btn.is-checked,
+#sort-buttons .btn.is-checked {
   color: white;
 }
 
-.button:active {
-  box-shadow: inset 0 1px 10px hsla(0, 0%, 0%, 0.8);
+/* project card */
+.wppool-grid-container .wppool-loop-project .card {
+  cursor: pointer;
+  max-width: 300px;
+  margin: 0 auto;
 }
 

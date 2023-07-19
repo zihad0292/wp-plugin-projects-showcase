@@ -11,7 +11,8 @@
   });
 
   // Filtering functionality
-  $("#filter-buttons").on("click", "button", function () {
+  $("#filter-buttons").on("click", "a", function (e) {
+    e.preventDefault();
     var $this = $(this);
     $this.addClass("is-checked");
     $this.siblings().removeClass("is-checked");
@@ -20,7 +21,8 @@
   });
 
   // Sorting functionality (optional)
-  $("#sort-buttons").on("click", "button", function () {
+  $("#sort-buttons").on("click", "a", function (e) {
+    e.preventDefault();
     var $this = $(this);
     $this.addClass("is-checked");
     $this.siblings().removeClass("is-checked");
