@@ -29,20 +29,24 @@ var frame, gframe;
       gframe.on("select", function () {
         var image_ids = [];
         var image_urls = [];
+        var full_size_image_urls = [];
         var attachments = gframe.state().get("selection").toJSON();
         //console.log(attachments);
         $("#images-container").html("");
-        console.log(attachments);
         for (i in attachments) {
           var attachment = attachments[i];
           image_ids.push(attachment.id);
           image_urls.push(attachment.sizes.thumbnail.url);
+          full_size_image_urls.push(attachment.sizes.full.url);
           $("#images-container").append(
             `<img style="margin-right: 10px; margin-top: 10px;" src='${attachment.sizes.thumbnail.url}' />`
           );
         }
         $("#wppool_zi_projects_images_id").val(image_ids.join(";"));
         $("#wppool_zi_projects_images_url").val(image_urls.join(";"));
+        $("#wppool_zi_projects_images_url_full_size").val(
+          full_size_image_urls.join(";")
+        );
       });
 
       gframe.open();

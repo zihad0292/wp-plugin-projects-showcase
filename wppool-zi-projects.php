@@ -24,8 +24,14 @@
 		add_action( 'admin_enqueue_scripts', array( $this, 'wppool_zi_projects_admin_assets' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'wppool_zi_projects_frontend_assets' ) );
 
-		// Load archive template
+		// Load templates
 		add_filter('template_include', array( $this, 'wppool_zi_projects_archive_template' ));
+		add_filter('template_include', array( $this, 'wppool_zi_projects_single_template' ));
+ 
+		 // AJAX handler for loading single post content
+		 add_action('wp_ajax_wppool_zi_projects_ajax_load_single_post_data', array($this, 'wppool_zi_projects_ajax_load_single_post_data'));
+		 add_action('wp_ajax_nopriv_wppool_zi_projects_ajax_load_single_post_data', array($this, 'wppool_zi_projects_ajax_load_single_post_data'));
+	
 	}
 
 	// Enqueue css and js files for admin
@@ -57,7 +63,16 @@
 		// Custom js file for frontend
 		wp_enqueue_script( 'wppool_zi_projects-frontend-js', plugin_dir_url( __FILE__ ) . "assets/js/frontend.js", array(
 			'jquery',
-		), time(), true );
+		), time(), true ); 
+		
+        // Localize the script with custom data 
+        $data = array( 
+            'ajax_url' => admin_url('admin-ajax.php'),
+			'security' => wp_create_nonce('wppool_zi_projects_load_single_post_by_ajax'),
+        );
+
+        wp_localize_script('wppool_zi_projects-frontend-js', 'ajax_data', $data);
+		 
 	}
 
 
@@ -125,11 +140,13 @@
 			return $post_id;
 		}
 
-		$image_id    = isset( $_POST['wppool_zi_projects_images_id'] ) ? $_POST['wppool_zi_projects_images_id'] : '';
-		$image_url    = isset( $_POST['wppool_zi_projects_images_url'] ) ? $_POST['wppool_zi_projects_images_url'] : '';
+		$image_ids    = isset( $_POST['wppool_zi_projects_images_id'] ) ? $_POST['wppool_zi_projects_images_id'] : '';
+		$image_urls    = isset( $_POST['wppool_zi_projects_images_url'] ) ? $_POST['wppool_zi_projects_images_url'] : '';
+		$full_size_image_urls    = isset( $_POST['wppool_zi_projects_images_url_full_size'] ) ? $_POST['wppool_zi_projects_images_url_full_size'] : '';
 
-		update_post_meta($post_id,'wppool_zi_projects_images_id',$image_id);
-		update_post_meta($post_id,'wppool_zi_projects_images_url',$image_url);
+		update_post_meta($post_id,'wppool_zi_projects_images_id', $image_ids);
+		update_post_meta($post_id,'wppool_zi_projects_images_url', $image_urls);
+		update_post_meta($post_id,'wppool_zi_projects_images_url_full_size', $full_size_image_urls);
 
 	}
 	
@@ -153,8 +170,10 @@
 
 	// Display upload image button for Preview Images
 	function wppool_zi_projects_preview_images($post) {
-		$image_id = esc_attr(get_post_meta($post->ID,'wppool_zi_projects_images_id',true));
-		$image_url = esc_attr(get_post_meta($post->ID,'wppool_zi_projects_images_url',true));
+		$image_ids = esc_attr(get_post_meta($post->ID,'wppool_zi_projects_images_id',true));
+		$image_urls = esc_attr(get_post_meta($post->ID,'wppool_zi_projects_images_url',true));
+		$full_size_image_urls = esc_attr(get_post_meta($post->ID,'wppool_zi_projects_images_url_full_size',true));
+
 		wp_nonce_field( 'wppool_zi_projects_preview_images', 'wppool_zi_projects_preview_images_nonce' );
 
 		$label = __('Preview Images','wppool-zi-projects');
@@ -167,8 +186,9 @@
 		</div>
 		<div class="input_c">
 			<button class="button" id="upload_images">{$button_label}</button>
-			<input type="hidden" name="wppool_zi_projects_images_id" id="wppool_zi_projects_images_id" value="{$image_id}"/>
-			<input type="hidden" name="wppool_zi_projects_images_url" id="wppool_zi_projects_images_url" value="{$image_url}"/>
+			<input type="hidden" name="wppool_zi_projects_images_id" id="wppool_zi_projects_images_id" value="{$image_ids}"/>
+			<input type="hidden" name="wppool_zi_projects_images_url" id="wppool_zi_projects_images_url" value="{$image_urls}"/>
+			<input type="hidden" name="wppool_zi_projects_images_url_full_size" id="wppool_zi_projects_images_url_full_size" value="{$full_size_image_urls}"/>
 			<div id="images-container"></div>
 		</div>
 		<div class="float_c"></div>
@@ -215,6 +235,72 @@ EOD;
 	
 		return $template;
 	}
+
+	// single template
+	function wppool_zi_projects_single_template($template) {
+		if (is_singular('wppool_zi_projects')) {
+			$child_template = locate_template('templates/single-wppool_zi_projects.php');
+	
+			if ($child_template) {
+				return $child_template;
+			}
+	
+			// Fallback to the plugin's template
+			return plugin_dir_path(__FILE__) . 'templates/single-wppool_zi_projects.php';
+		}
+	
+		return $template;
+	}
+	
+
+    public function wppool_zi_projects_ajax_load_single_post_data() {
+		// check nonce
+		check_ajax_referer( 'wppool_zi_projects_load_single_post_by_ajax', 'security' );  
+
+		if (isset($_POST['post_id'])) {
+            // Get the post ID from the AJAX request
+            $post_id = intval($_POST['post_id']);
+
+            // Check if the post ID is valid
+            if ($post_id) {
+                // Get the post object using the post ID
+                $post = get_post($post_id);
+
+                // Check if the post exists
+                if ($post) {
+					// Prepare the post data to send as a response
+					$response = array(
+						'post_title' => $post->post_title,
+						'post_content' => $post->post_content,  
+					);
+
+					// Get the featured image URL
+					$featured_image_url = get_the_post_thumbnail_url($post_id, 'full'); 
+		
+					// Add the featured image URL to the response
+					$response['featured_image'] = $featured_image_url;
+
+					// Get custom fields data
+					$external_url = get_post_meta($post_id, 'wppool_zi_projects_external_url', true); 
+					$preview_images = esc_attr(get_post_meta($post_id,'wppool_zi_projects_images_url_full_size',true)); 
+		
+					// Add custom fields data to the response
+					$response['external_url'] = $external_url;
+					$response['preview_images'] = $preview_images;
+		
+					// Send the post data as a JSON response
+					wp_send_json_success($response);
+                } else {
+                    echo 'Invalid post ID.';
+                }
+            } else {
+                echo 'Invalid post ID.';
+            }
+        } else {
+            echo 'Post ID not provided.';
+        }
+        wp_die();
+    }
 
 }
 

@@ -29,5 +29,29 @@
     var sortByValue = $(this).attr("data-sort-by");
     $grid.isotope({ sortBy: sortByValue });
   });
+
+  // Attach a click event to a link or button that will trigger the AJAX request
+  $(".ajax-load-post").on("click", function (e) {
+    e.preventDefault();
+    var post_id = $(this).data("post-id");
+
+    $.ajax({
+      type: "POST",
+      url: ajax_data.ajax_url,
+      data: {
+        action: "wppool_zi_projects_ajax_load_single_post_data",
+        post_id: post_id,
+        security: ajax_data.security,
+      },
+      success: function (response) {
+        console.log(response);
+        // Update the container where you want to display the single post content
+        $(".single-post-container").html(response);
+      },
+      error: function () {
+        alert("An error occurred while loading the post.");
+      },
+    });
+  });
 })(jQuery);
 
