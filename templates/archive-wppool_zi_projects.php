@@ -119,7 +119,7 @@ $fallback_image_path = $plugin_dir_url . 'assets/images/fallback-image.jpg';
                                 $external_url = get_post_meta( $post_id, 'wppool_zi_projects_external_url', true );
                     
                                 ?>
-                                <div class="col-12 col-sm-6 col-md-6 col-lg-4 mb-sm-3 mb-md-4 wppool-loop-project element-item <?php echo $category_classes;?>" data-category="<?php echo ! empty( $category_names ) ? $category_names : "0";?>" data-title="<?php the_title();?>" id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+                                <div class="col-12 col-sm-6 col-md-6 col-lg-4 mb-3 mb-md-4 wppool-loop-project element-item <?php echo $category_classes;?>" data-category="<?php echo ! empty( $category_names ) ? $category_names : "0";?>" data-title="<?php the_title();?>" id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
                                     <div class="card ajax-load-post" data-post-id="<?php the_ID();?>">
                                         <?php
                                         // Display the featured image (thumbnail) if it exists.
