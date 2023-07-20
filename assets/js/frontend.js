@@ -53,5 +53,12 @@
       },
     });
   });
+
+  // lightbox customization
+  lightbox.option({
+    maxWidth: 800,
+    fadeDuration: 300,
+    disableScrolling: true,
+  });
 })(jQuery);
 

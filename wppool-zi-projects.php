@@ -48,10 +48,12 @@
 
 	// Enqueue css and js files for frontend
 	function wppool_zi_projects_frontend_assets() { 
-		// frontend css
-		wp_enqueue_style( 'wppool_zi_projects-frontend-style', plugin_dir_url( __FILE__ ) . "assets/css/frontend.css", null, time() );
 		// bootstrap css
 		wp_enqueue_style( 'bootstrap-css', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css', null, time() );
+		// lightbox css
+		wp_enqueue_style( 'lightbox-css', plugin_dir_url( __FILE__ ) . "assets/css/lightbox.css", null, time() );
+		// frontend css
+		wp_enqueue_style( 'wppool_zi_projects-frontend-style', plugin_dir_url( __FILE__ ) . "assets/css/frontend.css", null, time() );
 		// bootstrap js
 		wp_enqueue_script( 'wppool_zi_projects-bootstrap-js', "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js", array(
 			'jquery',
@@ -60,9 +62,13 @@
 		wp_enqueue_script( 'wppool_zi_projects-isotope-js', "https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js", array(
 			'jquery',
 		), time(), true ); 
+		// lightbox-js
+		wp_enqueue_script( 'lightbox-js', plugin_dir_url( __FILE__ ) . "assets/js/lightbox.js", array(
+			'jquery',
+		), time(), true ); 
 		// Custom js file for frontend
 		wp_enqueue_script( 'wppool_zi_projects-frontend-js', plugin_dir_url( __FILE__ ) . "assets/js/frontend.js", array(
-			'jquery',
+			'jquery', 'wppool_zi_projects-isotope-js', 'lightbox-js',
 		), time(), true ); 
 		
         // Localize the script with custom data 

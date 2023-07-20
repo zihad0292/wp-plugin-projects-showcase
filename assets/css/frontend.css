@@ -3,17 +3,20 @@
 }
 
 /* page header */
+.jumbotron {
+  position: relative;
+  padding-top: 7rem;
+  padding-bottom: 10rem;
+}
+
 .archive-header.jumbotron {
   background-image: url("../images/archive-header.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  padding-top: 7rem;
-  padding-bottom: 10rem;
-  position: relative;
 }
 
-.archive-header.jumbotron .overlay {
+.jumbotron .overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -22,7 +25,7 @@
   background: rgba(0, 0, 0, 0.3);
 }
 
-.archive-header.jumbotron .container {
+.jumbotron .overlay + .container {
   position: relative;
 }
 
@@ -74,10 +77,26 @@
   min-height: 1.5rem;
   color: #666666;
 }
+
+/* Single post */
+.single-post {
+  background-color: #f1f1f1;
+}
+
+.preview-images .row {
+  display: flex;
+  justify-content: center;
+}
+
 @media screen and (max-width: 767px) {
   .wppool-grid-container .wppool-loop-project .card {
     max-width: 300px;
     margin: 0 auto;
+  }
+
+  .single-post .preview-images .image-wrapper {
+    max-width: 300px;
+    margin: auto;
   }
 }
 
