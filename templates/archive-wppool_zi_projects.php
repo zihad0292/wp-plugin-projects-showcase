@@ -45,7 +45,7 @@ $plugin_dir_url = plugin_dir_url( dirname( __FILE__ ) );
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="modal-title fs-6 mt-0 mb-0" id="singlePostModal">Modal title</h2>
+        <h2 class="modal-title text-dark fs-6 mt-0 mb-0" id="singlePostModal">Modal title</h2>
         <span class="btn-close" data-bs-dismiss="modal" aria-label="Close"></span>
       </div>
       <div class="modal-body">
@@ -68,7 +68,7 @@ $plugin_dir_url = plugin_dir_url( dirname( __FILE__ ) );
         <div class="overlay"></div>
         <div class="container">
             <h1 class="display-4 fw-semibold text-light lh-base mt-0 mb-0">Portfolio projects</h1>
-            <p class="lead mt-2 text-light">A well-crafted portfolio is a window into one's professional journey, showcasing a diverse array of projects that highlight skills, expertise, and creativity. Each project encapsulates a unique story of dedication and problem-solving, reflecting the passion and commitment of the individual.</p>
+            <p class="lead mt-2 text-light fw-normal lh-base">A well-crafted portfolio is a window into one's professional journey, showcasing a diverse array of projects that highlight skills, expertise, and creativity. Each project encapsulates a unique story of dedication and problem-solving, reflecting the passion and commitment of the individual.</p>
         </div>
     </div>
     <section class="content py-5">
@@ -81,9 +81,9 @@ $plugin_dir_url = plugin_dir_url( dirname( __FILE__ ) );
                             <?php
                             // check if there are any projects available
                             if ( have_posts() ){
-                                echo '<a href="#" class="btn btn-secondary is-checked" data-filter="*">All</a>';
                                 // Check if categories are available and loop through them
-                                if ( ! is_wp_error( $all_categories ) && ! empty( $all_categories ) ) {
+                                if ( ! is_wp_error( $all_categories ) && ! empty( $all_categories )) {
+                                    echo '<a href="#" class="btn btn-secondary is-checked" data-filter="*">All</a>';
                                     foreach ( $all_categories as $category ) {
                                         // Output the category name and link
                                         echo '<a href="#" class="btn btn-secondary" data-filter=".' . $category->slug . '">' . $category->name . '</a>';
@@ -107,7 +107,7 @@ $plugin_dir_url = plugin_dir_url( dirname( __FILE__ ) );
                         </div><!-- #sort-buttons -->
                         <?php
                         }else{
-                            echo '<span class="fs-6 ps-2">No options available!</span>';
+                            echo '<p class="fs-6 ps-2 text-dark">No options available!</p>';
                         }
                         ?> 
                     </div><!-- sidebar-row -->
@@ -153,7 +153,7 @@ $plugin_dir_url = plugin_dir_url( dirname( __FILE__ ) );
                                     <div class="card ajax-load-post" data-post-id="<?php the_ID();?>" data-title="<?php the_title();?>" data-bs-toggle="modal" data-bs-target="#single-post-modal">
                                     <?php echo '<img class="card-img-top d-block w-100" src="' . esc_url( $thumbnail_url ) . '" alt="' . get_the_title() . '">'; ?> 
                                         <div class="card-body">
-                                            <h5 class="card-title fs-5 fw-normal text-center pb-0 mt-0 mb-3"><?php the_title(); ?></h5>  
+                                            <h5 class="card-title fs-5 text-dark fw-normal text-center pb-0 mt-0 mb-3"><?php the_title(); ?></h5>  
                                             <p class="fs-6 fw-medium text-center wppool-loop-project-category text-dark">
                                             <?php 
                                             // Check if categories are available and loop through them
