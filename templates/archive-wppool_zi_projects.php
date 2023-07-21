@@ -86,7 +86,7 @@ $plugin_dir_url = plugin_dir_url( dirname( __FILE__ ) );
                                     echo '<a href="#" class="btn btn-secondary is-checked" data-filter="*">All</a>';
                                     foreach ( $all_categories as $category ) {
                                         // Output the category name and link
-                                        echo '<a href="#" class="btn btn-secondary" data-filter=".' . $category->slug . '">' . $category->name . '</a>';
+                                        echo '<a href="#" class="btn btn-secondary text-decoration-none" data-filter=".' . $category->slug . '">' . $category->name . '</a>';
                                     }
                                 } else {
                                     echo '<p class="fs-6 ps-3 text-dark">No categories found!</p>';
@@ -103,7 +103,7 @@ $plugin_dir_url = plugin_dir_url( dirname( __FILE__ ) );
                         // check if there are any projects available
                         if ( have_posts() ){ ?>
                         <div id="sort-buttons">
-                            <a href="#" class="btn btn-secondary is-checked" data-sort-by="original-order">Default</a><a href="#" class="btn btn-secondary" data-sort-by="category">Category</a><a href="#" class="btn btn-secondary" data-sort-by="title">Title</a>   
+                            <a href="#" class="btn btn-secondary is-checked text-decoration-none" data-sort-by="original-order">Default</a><a href="#" class="btn btn-secondary text-decoration-none" data-sort-by="category">Category</a><a href="#" class="btn btn-secondary text-decoration-none" data-sort-by="title">Title</a>   
                         </div><!-- #sort-buttons -->
                         <?php
                         }else{
