@@ -46,7 +46,7 @@ $plugin_dir_url = plugin_dir_url( dirname( __FILE__ ) );
     <div class="modal-content">
       <div class="modal-header">
         <h2 class="modal-title text-dark fs-6 mt-0 mb-0" id="singlePostModal">Modal title</h2>
-        <span class="btn-close" data-bs-dismiss="modal" aria-label="Close"></span>
+        <span class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="cursor: pointer;"></span>
       </div>
       <div class="modal-body">
         <div class="loader-wrapper">
