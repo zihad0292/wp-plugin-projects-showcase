@@ -83,6 +83,10 @@
   background-color: #f1f1f1;
 }
 
+.single-post .featured-image {
+  text-align: center;
+}
+
 .preview-images .row {
   display: flex;
   justify-content: center;
@@ -98,5 +102,23 @@
     max-width: 300px;
     margin: auto;
   }
+}
+
+/* single post modal */
+.modal.show {
+  display: flex !important;
+  justify-content: center;
+}
+
+.modal .modal-dialog {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: 2rem;
+  margin-right: 2rem;
+}
+
+.loader-wrapper {
+  text-align: center;
+  padding: 5rem 0;
 }
 

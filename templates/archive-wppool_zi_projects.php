@@ -1,12 +1,6 @@
 <?php
 /**
  * Custom Post Type Archive Template
- *
- * Template for displaying the archive of your custom post type.
- *
- * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
- *
- * @package Your_Theme
  */
 
 wp_head();  
@@ -43,9 +37,31 @@ function sort_terms_ascending($a, $b) {
 
 // project fallback thubmnail and header image.
 $plugin_dir_url = plugin_dir_url( dirname( __FILE__ ) ); 
-$fallback_image_path = $plugin_dir_url . 'assets/images/fallback-image.jpg';
  
 ?>
+
+<!-- Modal -->
+<div class="modal fade" id="single-post-modal" tabindex="-1" aria-labelledby="singlePostModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title fs-6" id="singlePostModal">Modal title</h2>
+        <span class="btn-close" data-bs-dismiss="modal" aria-label="Close"></span>
+      </div>
+      <div class="modal-body">
+        <div class="loader-wrapper">
+            <div class="spinner-grow text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+        <div class="content-wrapper container"></div>
+      </div>
+      <div class="modal-footer">
+        <span href="#" class="btn btn-danger" data-bs-dismiss="modal">Close</span> 
+      </div>
+    </div>
+  </div>
+</div>
 
 <main class="wppool-archive-wrapper">
     <div class="archive-header jumbotron jumbotron-fluid bg-secondary text-light">
@@ -63,24 +79,37 @@ $fallback_image_path = $plugin_dir_url . 'assets/images/fallback-image.jpg';
                         <h4 class="fs-6 mb-3">Categories:</h4>
                         <div id="filter-buttons">
                             <?php
-                            echo '<a href="#" class="btn btn-secondary is-checked" data-filter="*">All</a>';
-                            // Check if categories are available and loop through them
-                            if ( ! is_wp_error( $all_categories ) && ! empty( $all_categories ) ) {
-                                foreach ( $all_categories as $category ) {
-                                    // Output the category name and link
-                                    echo '<a href="#" class="btn btn-secondary" data-filter=".' . $category->slug . '">' . $category->name . '</a>';
-                                }
-                            } else {
-                                echo 'No categories found!';
-                            }  
+                            // check if there are any projects available
+                            if ( have_posts() ){
+                                echo '<a href="#" class="btn btn-secondary is-checked" data-filter="*">All</a>';
+                                // Check if categories are available and loop through them
+                                if ( ! is_wp_error( $all_categories ) && ! empty( $all_categories ) ) {
+                                    foreach ( $all_categories as $category ) {
+                                        // Output the category name and link
+                                        echo '<a href="#" class="btn btn-secondary" data-filter=".' . $category->slug . '">' . $category->name . '</a>';
+                                    }
+                                } else {
+                                    echo '<span class="fs-6 ps-3">No categories found!</span>';
+                                }  
+                            }else{
+                                echo '<span class="fs-6 ps-3">No options available!</span>';
+                            }
                             ?>    
                         </div><!-- #filter-buttons -->
                     </div><!-- sidebar-row -->
                     <div class="sidebar-row mb-5">
                         <h4 class="fs-6 mb-3">Sort By:</h4>
+                        <?php
+                        // check if there are any projects available
+                        if ( have_posts() ){ ?>
                         <div id="sort-buttons">
                             <a href="#" class="btn btn-secondary is-checked" data-sort-by="original-order">Default</a><a href="#" class="btn btn-secondary" data-sort-by="category">Category</a><a href="#" class="btn btn-secondary" data-sort-by="title">Title</a>   
                         </div><!-- #sort-buttons -->
+                        <?php
+                        }else{
+                            echo '<span class="fs-6 ps-2">No options available!</span>';
+                        }
+                        ?> 
                     </div><!-- sidebar-row -->
                 </div>
                 <div class="col-sm-12 col-md-9 col-lg-10">
@@ -115,20 +144,14 @@ $fallback_image_path = $plugin_dir_url . 'assets/images/fallback-image.jpg';
 
                                 // Get the URL of the featured image (thumbnail).
                                 $thumbnail_url = get_the_post_thumbnail_url( $post_id, 'wppool-zi-projects-thumb-square' );
-                                // get the external URL custom field value. 
-                                $external_url = get_post_meta( $post_id, 'wppool_zi_projects_external_url', true );
+                                if ( !$thumbnail_url ) {
+                                    $thumbnail_url = $plugin_dir_url . 'assets/images/fallback-image.jpg';
+                                }
                     
                                 ?>
-                                <div class="col-12 col-sm-6 col-md-6 col-lg-4 mb-3 mb-md-4 wppool-loop-project element-item <?php echo $category_classes;?>" data-category="<?php echo ! empty( $category_names ) ? $category_names : "0";?>" data-title="<?php the_title();?>" id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-                                    <div class="card ajax-load-post" data-post-id="<?php the_ID();?>">
-                                        <?php
-                                        // Display the featured image (thumbnail) if it exists.
-                                        if ( $thumbnail_url ) {
-                                            echo '<img class="card-img-top" src="' . esc_url( $thumbnail_url ) . '" alt="' . get_the_title() . '">';
-                                        } else {
-                                            echo '<img style="display: block; width: 100%;" src="' . esc_url($fallback_image_path) . '" alt="Fallback Image">'; 
-                                        }
-                                        ?> 
+                                <div class="col-12 col-sm-6 col-md-6 col-lg-4 mb-3 mb-md-4 wppool-loop-project element-item <?php echo $category_classes;?>" data-title="<?php the_title();?>" data-category="<?php echo ! empty( $category_names ) ? $category_names : "0";?>" id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+                                    <div class="card ajax-load-post" data-post-id="<?php the_ID();?>" data-title="<?php the_title();?>" data-bs-toggle="modal" data-bs-target="#single-post-modal">
+                                    <?php echo '<img class="card-img-top" src="' . esc_url( $thumbnail_url ) . '" alt="' . get_the_title() . '">'; ?> 
                                         <div class="card-body">
                                             <h5 class="card-title fs-5 fw-normal text-center"><?php the_title(); ?></h5>  
                                             <p class="fs-6 fw-medium text-center wppool-loop-project-category">
@@ -149,6 +172,8 @@ $fallback_image_path = $plugin_dir_url . 'assets/images/fallback-image.jpg';
                             endwhile;
                             ?> 
                         </div><!-- row projects-grid -->                   
+                        <?php else: ?>
+                            <p class="text-center fs-5">No projects found!</p>
                         <?php endif; ?>
                     </div><!-- wppool-grid-container -->                   
                 </div><!-- col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content -->

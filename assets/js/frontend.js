@@ -34,6 +34,13 @@
   $(".ajax-load-post").on("click", function (e) {
     e.preventDefault();
     var post_id = $(this).data("post-id");
+    var title = $(this).data("title");
+    // set the modal title to post title
+    $(".modal .modal-title").text(title);
+    // show the loader
+    $(".modal .loader-wrapper").show();
+    // set the modal content to ""
+    $(".modal .modal-body .content-wrapper").html("");
 
     $.ajax({
       type: "POST",
@@ -45,8 +52,10 @@
       },
       success: function (response) {
         console.log(response);
+        // hide the loader
+        $(".modal .loader-wrapper").hide();
         // Update the container where you want to display the single post content
-        $(".single-post-container").html(response);
+        $(".modal .modal-body .content-wrapper").html(response);
       },
       error: function () {
         alert("An error occurred while loading the post.");

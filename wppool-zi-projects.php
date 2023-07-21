@@ -273,29 +273,44 @@ EOD;
                 $post = get_post($post_id);
 
                 // Check if the post exists
-                if ($post) {
-					// Prepare the post data to send as a response
-					$response = array(
-						'post_title' => $post->post_title,
-						'post_content' => $post->post_content,  
-					);
+                if ($post) { 
+					ob_start();
+					// title
+					$post_title = $post->post_title;
+					// categories
+					$post_categories = get_the_terms( $post_id, 'category' );
+					// description
+					$post_content = $post->post_content;
 
 					// Get the featured image URL
-					$featured_image_url = get_the_post_thumbnail_url($post_id, 'full'); 
-		
-					// Add the featured image URL to the response
-					$response['featured_image'] = $featured_image_url;
+					$thumbnail_url = get_the_post_thumbnail_url($post_id, 'full');
+			
+					// project fallback thubmnail and header image.
+					$plugin_dir_url = plugin_dir_url( __FILE__ ); 
+					$fallback_image_path = $plugin_dir_url . 'assets/images/archive-header.jpg';
+			
+					if(!$thumbnail_url){
+						$thumbnail_url = $fallback_image_path;
+					}
+			
+					// Custom Fields
+					$external_url = get_post_meta($post_id, 'wppool_zi_projects_external_url', true);
+					$preview_images = get_post_meta($post_id, 'wppool_zi_projects_images_url', true);
+					$preview_images_full_size = get_post_meta($post_id, 'wppool_zi_projects_images_url_full_size', true);
+			
+					// convert the data to array for use in template
+					$preview_images = explode(';', $preview_images);
+					$preview_images_full_size = explode(';', $preview_images_full_size);
 
-					// Get custom fields data
-					$external_url = get_post_meta($post_id, 'wppool_zi_projects_external_url', true); 
-					$preview_images = esc_attr(get_post_meta($post_id,'wppool_zi_projects_images_url_full_size',true)); 
-		
-					// Add custom fields data to the response
-					$response['external_url'] = $external_url;
-					$response['preview_images'] = $preview_images;
-		
-					// Send the post data as a JSON response
-					wp_send_json_success($response);
+					// include the content template
+					include 'templates/template-parts/content.php';
+
+					// save the output in a variable
+					$content = ob_get_clean();
+
+					// return the output
+					echo $content; 
+		   
                 } else {
                     echo 'Invalid post ID.';
                 }
