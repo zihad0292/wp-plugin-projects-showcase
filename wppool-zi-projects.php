@@ -275,33 +275,6 @@ EOD;
                 // Check if the post exists
                 if ($post) { 
 					ob_start();
-					// title
-					$post_title = $post->post_title;
-					// categories
-					$post_categories = get_the_terms( $post_id, 'category' );
-					// description
-					$post_content = $post->post_content;
-
-					// Get the featured image URL
-					$thumbnail_url = get_the_post_thumbnail_url($post_id, 'full');
-			
-					// project fallback thubmnail and header image.
-					$plugin_dir_url = plugin_dir_url( __FILE__ ); 
-					$fallback_image_path = $plugin_dir_url . 'assets/images/archive-header.jpg';
-			
-					if(!$thumbnail_url){
-						$thumbnail_url = $fallback_image_path;
-					}
-			
-					// Custom Fields
-					$external_url = get_post_meta($post_id, 'wppool_zi_projects_external_url', true);
-					$preview_images = get_post_meta($post_id, 'wppool_zi_projects_images_url', true);
-					$preview_images_full_size = get_post_meta($post_id, 'wppool_zi_projects_images_url_full_size', true);
-			
-					// convert the data to array for use in template
-					$preview_images = explode(';', $preview_images);
-					$preview_images_full_size = explode(';', $preview_images_full_size);
-
 					// include the content template
 					include 'templates/template-parts/content.php';
 
