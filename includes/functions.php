@@ -7,7 +7,7 @@
 		$labels = array(
             'name'               => 'Projects',
             'singular_name'      => 'Project',
-            'menu_name'          => 'Projects', 
+            'menu_name'          => 'WPPool ZI Projects', 
             'add_new'            => 'Add New',
             'add_new_item'       => 'Add New Project',
             'new_item'           => 'New Project',
