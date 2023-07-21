@@ -16,22 +16,43 @@
 
  class WppoolZiProjects {
 	public function __construct() {  
+		// Register custom post type and custom image size
 		add_action( 'init', array( $this, 'wppool_zi_projects_init' ) );
 		add_action( 'init', array( $this, 'wppool_zi_projects_register_image_size' ) ); 
-		add_action( 'admin_menu', array( $this, 'wppool_zi_projects_add_metabox' ) );
-		add_action( 'save_post', array( $this, 'wppool_zi_projects_save_metabox' ) );
-		add_action( 'save_post', array( $this, 'wppool_zi_projects_save_preview_images' ) );
+
+		// enqueue scripts and styles
 		add_action( 'admin_enqueue_scripts', array( $this, 'wppool_zi_projects_admin_assets' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'wppool_zi_projects_frontend_assets' ) );
+
+		// add custom fields
+		add_action( 'admin_menu', array( $this, 'wppool_zi_projects_add_metaboxes' ) );
+
+		// save custom field value
+		add_action( 'save_post', array( $this, 'wppool_zi_projects_save_external_url' ) );
+		add_action( 'save_post', array( $this, 'wppool_zi_projects_save_preview_images' ) );
 
 		// Load templates
 		add_filter('template_include', array( $this, 'wppool_zi_projects_archive_template' ));
 		add_filter('template_include', array( $this, 'wppool_zi_projects_single_template' ));
- 
-		 // AJAX handler for loading single post content
-		 add_action('wp_ajax_wppool_zi_projects_ajax_load_single_post_data', array($this, 'wppool_zi_projects_ajax_load_single_post_data'));
-		 add_action('wp_ajax_nopriv_wppool_zi_projects_ajax_load_single_post_data', array($this, 'wppool_zi_projects_ajax_load_single_post_data'));
+
+		// AJAX handler for loading single post content
+		add_action('wp_ajax_wppool_zi_projects_ajax_load_single_post_data', array($this, 'wppool_zi_projects_ajax_load_single_post_data'));
+		add_action('wp_ajax_nopriv_wppool_zi_projects_ajax_load_single_post_data', array($this, 'wppool_zi_projects_ajax_load_single_post_data'));
 	
+	}
+ 
+	// Register custom post type
+	function wppool_zi_projects_init() {
+		
+		wppool_zi_projects_register_post_types();
+		
+		// if there is any need to customize
+		do_action( 'wppool_zi_projects_init' );
+	}
+
+	// Register image sizes
+	function wppool_zi_projects_register_image_size() { 
+		add_image_size( 'wppool-zi-projects-thumb-square', 300, 300, true );
 	}
 
 	// Enqueue css and js files for admin
@@ -109,78 +130,51 @@
 
 	}
 
- 
-	// Register custom post type
-	function wppool_zi_projects_init() {
-		
-		wppool_zi_projects_register_post_types();
-		
-		do_action( 'wppool_zi_projects_init' );
-	}
-
-	function wppool_zi_projects_register_image_size() { 
-		add_image_size( 'wppool-zi-projects-thumb-square', 300, 300, true );
-	}
-
-	// Save metabox function
-	function wppool_zi_projects_save_metabox( $post_id ) {
-
-		if ( ! $this->is_secured( 'wppool_zi_projects_external_url_field', 'wppool_zi_projects_external_url', $post_id ) ) {
-			return $post_id;
-		}
-
-		$external_url    = isset( $_POST['wppool_zi_projects_external_url'] ) ? $_POST['wppool_zi_projects_external_url'] : ''; 
-
-		if ( $external_url == '' ) {
-			return $post_id;
-		}
-
-		$external_url = sanitize_text_field( $external_url ); 
-
-		update_post_meta( $post_id, 'wppool_zi_projects_external_url', $external_url ); 
-	}
-
-	// Save preivew images
-	function wppool_zi_projects_save_preview_images($post_id){
-		if ( ! $this->is_secured( 'wppool_zi_projects_preview_images_nonce', 'wppool_zi_projects_preview_images', $post_id ) ) {
-			return $post_id;
-		}
-
-		$image_ids    = isset( $_POST['wppool_zi_projects_images_id'] ) ? $_POST['wppool_zi_projects_images_id'] : '';
-		$image_urls    = isset( $_POST['wppool_zi_projects_images_url'] ) ? $_POST['wppool_zi_projects_images_url'] : '';
-		$full_size_image_urls    = isset( $_POST['wppool_zi_projects_images_url_full_size'] ) ? $_POST['wppool_zi_projects_images_url_full_size'] : '';
-
-		update_post_meta($post_id,'wppool_zi_projects_images_id', $image_ids);
-		update_post_meta($post_id,'wppool_zi_projects_images_url', $image_urls);
-		update_post_meta($post_id,'wppool_zi_projects_images_url_full_size', $full_size_image_urls);
-
-	}
-	
 	// Wrapper function for add_meta_box WP functions
-	function wppool_zi_projects_add_metabox() {
+	function wppool_zi_projects_add_metaboxes() {
 		add_meta_box(
 			'wppool_zi_projects_external_url',
 			__( 'External URL', 'wppool-zi-projects' ),
-			array( $this, 'wppool_zi_projects_display_metabox' ),
+			array( $this, 'wppool_zi_projects_external_url_metabox' ),
 			'wppool_zi_projects',
 		); 
 
 		add_meta_box(
-			'wppool_zi_projects_preview_images',
+			'wppool_zi_projects_preview_images_metabox',
 			__( 'Preview Images', 'wppool-zi-projects' ),
-			array( $this, 'wppool_zi_projects_preview_images' ),
+			array( $this, 'wppool_zi_projects_preview_images_metabox' ),
 			'wppool_zi_projects',
 		);
 
 	}
 
+	// Display textfield metabox for External URL
+	function wppool_zi_projects_external_url_metabox( $post ) {
+		$external_url    = get_post_meta( $post->ID, 'wppool_zi_projects_external_url', true );
+
+		$label1 = __( 'External URL', 'wppool-zi-projects' );
+
+		wp_nonce_field( 'wppool_zi_projects_external_url', 'wppool_zi_projects_external_url_field' );
+
+
+		$metabox_html = <<<EOD
+<p>
+<label for="wppool_zi_projects_external_url">{$label1}: </label>
+<input type="text" name="wppool_zi_projects_external_url" id="wppool_zi_projects_external_url" value="{$external_url}"/>
+</p>
+EOD;
+
+		echo $metabox_html;
+	}
+
+
 	// Display upload image button for Preview Images
-	function wppool_zi_projects_preview_images($post) {
+	function wppool_zi_projects_preview_images_metabox($post) {
 		$image_ids = esc_attr(get_post_meta($post->ID,'wppool_zi_projects_images_id',true));
 		$image_urls = esc_attr(get_post_meta($post->ID,'wppool_zi_projects_images_url',true));
 		$full_size_image_urls = esc_attr(get_post_meta($post->ID,'wppool_zi_projects_images_url_full_size',true));
 
-		wp_nonce_field( 'wppool_zi_projects_preview_images', 'wppool_zi_projects_preview_images_nonce' );
+		wp_nonce_field( 'wppool_zi_projects_preview_images_metabox', 'wppool_zi_projects_preview_images_metabox_nonce' );
 
 		$label = __('Preview Images','wppool-zi-projects');
 		$button_label = __('Upload Images','wppool-zi-projects');
@@ -207,23 +201,38 @@ EOD;
 
 	}
 
-	// Display textfield metabox for External URL
-	function wppool_zi_projects_display_metabox( $post ) {
-		$external_url    = get_post_meta( $post->ID, 'wppool_zi_projects_external_url', true );
+	// Save external url function
+	function wppool_zi_projects_save_external_url( $post_id ) {
 
-		$label1 = __( 'External URL', 'wppool-zi-projects' );
+		if ( ! $this->is_secured( 'wppool_zi_projects_external_url_field', 'wppool_zi_projects_external_url', $post_id ) ) {
+			return $post_id;
+		}
 
-		wp_nonce_field( 'wppool_zi_projects_external_url', 'wppool_zi_projects_external_url_field' );
+		$external_url    = isset( $_POST['wppool_zi_projects_external_url'] ) ? $_POST['wppool_zi_projects_external_url'] : ''; 
 
+		if ( $external_url == '' ) {
+			return $post_id;
+		}
 
-		$metabox_html = <<<EOD
-<p>
-<label for="wppool_zi_projects_external_url">{$label1}: </label>
-<input type="text" name="wppool_zi_projects_external_url" id="wppool_zi_projects_external_url" value="{$external_url}"/>
-</p>
-EOD;
+		$external_url = sanitize_text_field( $external_url ); 
 
-		echo $metabox_html;
+		update_post_meta( $post_id, 'wppool_zi_projects_external_url', $external_url ); 
+	}
+
+	// Save preivew images
+	function wppool_zi_projects_save_preview_images($post_id){
+		if ( ! $this->is_secured( 'wppool_zi_projects_preview_images_metabox_nonce', 'wppool_zi_projects_preview_images_metabox', $post_id ) ) {
+			return $post_id;
+		}
+
+		$image_ids    = isset( $_POST['wppool_zi_projects_images_id'] ) ? $_POST['wppool_zi_projects_images_id'] : '';
+		$image_urls    = isset( $_POST['wppool_zi_projects_images_url'] ) ? $_POST['wppool_zi_projects_images_url'] : '';
+		$full_size_image_urls    = isset( $_POST['wppool_zi_projects_images_url_full_size'] ) ? $_POST['wppool_zi_projects_images_url_full_size'] : '';
+
+		update_post_meta($post_id,'wppool_zi_projects_images_id', $image_ids);
+		update_post_meta($post_id,'wppool_zi_projects_images_url', $image_urls);
+		update_post_meta($post_id,'wppool_zi_projects_images_url_full_size', $full_size_image_urls);
+
 	}
 
 	// archive template
@@ -258,7 +267,7 @@ EOD;
 		return $template;
 	}
 	
-
+	// callback function for ajax single post loading
     public function wppool_zi_projects_ajax_load_single_post_data() {
 		// check nonce
 		check_ajax_referer( 'wppool_zi_projects_load_single_post_by_ajax', 'security' );  
